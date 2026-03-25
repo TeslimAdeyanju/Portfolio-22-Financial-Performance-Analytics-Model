@@ -1,0 +1,329 @@
+createOrReplace
+
+	table DAX
+		lineageTag: 6f09558f-c856-4237-a6d7-828f711574bc
+
+		measure 'Total Sales' = SUM('Transaction'[ Sales])
+			displayFolder: Profitability
+			lineageTag: f0b3b595-dd84-4f27-a811-ce8768f7e6d1
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		/// Profit margin percentage calculated as Total Profit divided by Total Sales
+		measure 'Profit Margin' = DIVIDE(SUM('Transaction'[Profit]), SUM('Transaction'[ Sales]))
+			formatString: 0.00%
+			displayFolder: Profitability
+			lineageTag: 88b16623-d4e6-4706-889e-8cd0fb12ec8b
+
+		/// Total profit across all transactions
+		measure 'Total Profit' = SUM('Transaction'[Profit])
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Profitability
+			lineageTag: 66d9633c-746b-4108-944a-8e9fc605e874
+
+		/// Total Cost of Goods Sold
+		measure 'Total COGS' = SUM('Transaction'[COGS])
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Profitability
+			lineageTag: e396025f-08c2-4afb-b0d0-f054438c2efe
+
+		/// Total gross sales before discounts
+		measure 'Total Gross Sales' = SUM('Transaction'[Gross Sales])
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Profitability
+			lineageTag: b6804605-fabb-43a8-a1a1-d79166d91d2d
+
+		/// Total discounts given to customers
+		measure 'Total Discounts' = SUM('Transaction'[Discounts])
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Profitability
+			lineageTag: d79b2758-4380-4458-952f-fd4e96b01bee
+
+		/// Gross profit margin as a percentage (Gross Sales - COGS) / Gross Sales
+		measure 'Gross Profit Margin %' = DIVIDE([Total Gross Sales] - [Total COGS], [Total Gross Sales], 0)
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Profitability
+			lineageTag: 9cf90f1c-8377-4c26-b8b8-548070d8b717
+
+		/// Net profit margin as a percentage (Profit / Sales)
+		measure 'Net Profit Margin %' = DIVIDE([Total Profit], [Total Sales], 0)
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Profitability
+			lineageTag: eb5252b5-c3d5-477d-805b-98ad129dcbd9
+
+		/// Total number of units sold
+		measure 'Total Units Sold' = SUM('Transaction'[Units Sold])
+			formatString: #,0
+			displayFolder: Profitability
+			lineageTag: 724f0ed1-d8f9-4816-bff3-a0875da607d5
+
+		/// Average profit earned per unit sold
+		measure 'Profit per Unit' = DIVIDE([Total Profit], [Total Units Sold], 0)
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Profitability
+			lineageTag: e2b6ad5d-667b-4624-8d9c-d5c81af1eb28
+
+		/// Average profit per transaction
+		measure 'Average Profit per Transaction' =
+				
+				AVERAGEX ( 'Transaction', 'Transaction'[Profit] )
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Profitability
+			lineageTag: 8405063c-b3a9-4491-891d-bc5ee8e948e7
+
+		/// Ratio of costs to sales (COGS / Sales)
+		measure 'Cost Ratio %' = DIVIDE([Total COGS], [Total Sales], 0)
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Profitability
+			lineageTag: 3ea3282a-d8c3-47d1-ac33-8cbdf9487a40
+
+		/// Percentage of discounts given relative to gross sales
+		measure 'Discount Rate %' = DIVIDE([Total Discounts], [Total Gross Sales], 0)
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Profitability
+			lineageTag: 4e49f41e-1fbb-4d18-8ab7-81a578df8281
+
+		/// Markup percentage (Profit / COGS)
+		measure 'Markup %' = DIVIDE([Total Profit], [Total COGS], 0)
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Profitability
+			lineageTag: ebde7c97-37f6-4c7d-a8fe-b63b24d2435e
+
+		/// Return on cost - how much profit is generated per unit of cost
+		measure 'Return on Cost %' = DIVIDE([Total Profit], [Total COGS], 0)
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Profitability
+			lineageTag: 030bba3a-a060-4d74-9771-0cfa1319afff
+
+		/// Average selling price per unit
+		measure 'Average Sale Price per Unit' = DIVIDE([Total Sales], [Total Units Sold], 0)
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Profitability
+			lineageTag: 3f2718b3-02c3-459a-be71-11cdb6d51714
+
+		/// Average cost of goods sold per unit
+		measure 'Average Cost per Unit' =
+				
+				DIVIDE ( [Total COGS], [Total Units Sold], 0 )
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Profitability
+			lineageTag: 76ef744c-74ba-4723-ba6e-ce86a1c382e3
+
+		/// Total number of transactions
+		measure 'Transaction Count' = COUNTROWS('Transaction')
+			formatString: #,0
+			displayFolder: Profitability
+			lineageTag: d2b356cc-a1ae-4239-8e8f-902519c7f491
+
+		/// Total sales for previous month
+		measure 'Previous Month Sales' = CALCULATE ( [Total Sales], DATEADD ( Date_dimension[Date], -1, MONTH ) )
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Revenue and Growth Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000001
+
+		/// Total sales for previous year
+		measure 'Previous Year Sales' = CALCULATE ( [Total Sales], SAMEPERIODLASTYEAR ( Date_dimension[Date] ) )
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Revenue and Growth Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000002
+
+		/// Month on month sales growth percentage
+		measure 'MoM Sales Growth %' = DIVIDE ( [Total Sales] - CALCULATE([Total Sales], DATEADD(Date_dimension[Date],-1, MONTH)), CALCULATE([Total Profit], DATEADD(Date_dimension[Date], -1, MONTH)),0)
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Revenue and Growth Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000003
+
+		/// Year on year sales growth percentage
+		measure 'YoY Sales Growth %' =
+				
+				DIVIDE(
+				    [Total Sales] - CALCULATE([Total Sales], SAMEPERIODLASTYEAR(Date_dimension[Date])),
+				    CALCULATE([Total Sales], SAMEPERIODLASTYEAR(Date_dimension[Date])),
+				    0
+				)
+			displayFolder: Revenue and Growth Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000004
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		/// Absolute sales growth value compared with previous year
+		measure 'Sales Growth Value YoY' = [Total Sales] - CALCULATE([Total Sales], SAMEPERIODLASTYEAR(Date_dimension[Date]))
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Revenue and Growth Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000005
+
+		/// Average sales generated per transaction
+		measure 'Revenue per Transaction' = DIVIDE ( [Total Sales], [Transaction Count], 0 )
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Efficiency and Productivity Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000006
+
+		/// Average units sold per transaction
+		measure 'Units per Transaction' = DIVIDE ( [Total Units Sold], [Transaction Count], 0 )
+			formatString: #,0.00
+			displayFolder: Efficiency and Productivity Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000007
+
+		/// Average profit generated per transaction based on aggregated values
+		measure 'Profit per Transaction' = DIVIDE ( [Total Profit], [Transaction Count], 0 )
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Efficiency and Productivity Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000008
+
+		/// Total discounts as a percentage of sales
+		measure 'Discount to Sales %' = DIVIDE ( [Total Discounts], [Total Sales], 0 )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Cost and Discount Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000009
+
+		/// Average discount amount per transaction
+		measure 'Discount per Transaction' = DIVIDE ( [Total Discounts], [Transaction Count], 0 )
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Cost and Discount Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000010
+
+		/// Average discount amount per unit sold
+		measure 'Discount per Unit' = DIVIDE ( [Total Discounts], [Total Units Sold], 0 )
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Cost and Discount Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000011
+
+		/// Cost price recovered as a percentage of sales
+		measure 'Cost Recovery %' = DIVIDE ( [Total Sales], [Total COGS], 0 )
+			formatString: 0.00x
+			displayFolder: Cost and Discount Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000012
+
+		/// Average gross sales amount per unit sold
+		measure 'Average Gross Sales per Unit' = DIVIDE ( [Total Gross Sales], [Total Units Sold], 0 )
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Pricing Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000013
+
+		/// Average realised sales amount per unit sold
+		measure 'Average Realised Price per Unit' = DIVIDE ( [Total Sales], [Total Units Sold], 0 )
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Pricing Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000014
+
+		/// Pricing realisation percentage after discounts
+		measure 'Price Realisation %' = DIVIDE ( [Total Sales], [Total Gross Sales], 0 )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Pricing Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000015
+
+		/// Discount impact on gross sales percentage
+		measure 'Discount Impact %' = DIVIDE ( [Total Gross Sales] - [Total Sales], [Total Gross Sales], 0 )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Pricing Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000016
+
+		/// Share of total sales in the current filter context by product
+		measure 'Product Sales Mix %' = DIVIDE ( [Total Sales], CALCULATE ( [Total Sales], ALL ( Product_dimension ) ), 0 )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Volume and Mix Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000017
+
+		/// Share of total units sold in the current filter context by product
+		measure 'Product Volume Mix %' = DIVIDE ( [Total Units Sold], CALCULATE ( [Total Units Sold], ALL ( Product_dimension ) ), 0 )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Volume and Mix Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000018
+
+		/// Profit share by product
+		measure 'Product Profit Mix %' = DIVIDE ( [Total Profit], CALCULATE ( [Total Profit], ALL ( Product_dimension ) ), 0 )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Volume and Mix Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000019
+
+		/// Sales share by segment
+		measure 'Segment Sales Share %' = DIVIDE ( [Total Sales], CALCULATE ( [Total Sales], ALL ( Segement_dimension ) ), 0 )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Segment and Market Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000020
+
+		/// Profit share by segment
+		measure 'Segment Profit Share %' = DIVIDE ( [Total Profit], CALCULATE ( [Total Profit], ALL ( Segement_dimension ) ), 0 )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Segment and Market Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000021
+
+		/// Sales share by country
+		measure 'Country Sales Share %' = DIVIDE ( [Total Sales], CALCULATE ( [Total Sales], ALL ( Country_dimension ) ), 0 )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Segment and Market Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000022
+
+		/// Profit share by country
+		measure 'Country Profit Share %' = DIVIDE ( [Total Profit], CALCULATE ( [Total Profit], ALL ( Country_dimension ) ), 0 )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Segment and Market Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000023
+
+		/// Sales change percentage against previous month
+		measure 'Sales Variance % vs Previous Month' =
+				DIVIDE (
+				[Total Sales] - CALCULATE ( [Total Sales], DATEADD ( Date_dimension[Date], -1, MONTH ) ),
+				CALCULATE ( [Total Sales], DATEADD ( Date_dimension[Date], -1, MONTH ) ),
+				0)
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Risk and Variance Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000024
+
+		/// Profit change percentage against previous month
+		measure 'Profit Variance % vs Previous Month' =
+				DIVIDE (
+					[Total Profit] - CALCULATE ( [Total Profit], DATEADD ( Date_dimension[Date], -1, MONTH ) ),
+					CALCULATE ( [Total Profit], DATEADD ( Date_dimension[Date], -1, MONTH ) ),
+					0
+				)
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Risk and Variance Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000025
+
+		/// Margin movement compared with previous month
+		measure 'Profit Margin Variance %' =
+				[Net Profit Margin %]
+				- CALCULATE ( [Net Profit Margin %], DATEADD ( Date_dimension[Date], -1, MONTH ) )
+			formatString: 0.00%;-0.00%;0.00%
+			displayFolder: Risk and Variance Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000026
+
+		/// Number of transactions per active day
+		measure 'Transactions per Day' = DIVIDE ( [Transaction Count], DISTINCTCOUNT ( Date_dimension[Date] ), 0 )
+			formatString: #,0.00
+			displayFolder: Operational Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000027
+
+		/// Units sold per active day
+		measure 'Units Sold per Day' = DIVIDE ( [Total Units Sold], DISTINCTCOUNT ( Date_dimension[Date] ), 0 )
+			formatString: #,0.00
+			displayFolder: Operational Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000028
+
+		/// Sales generated per active day
+		measure 'Sales per Day' = DIVIDE ( [Total Sales], DISTINCTCOUNT ( Date_dimension[Date] ), 0 )
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Operational Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000029
+
+		/// Profit generated per active day
+		measure 'Profit per Day' = DIVIDE ( [Total Profit], DISTINCTCOUNT ( Date_dimension[Date] ), 0 )
+			formatString: "£"#,0.00;-"£"#,0.00;"£"#,0.00
+			displayFolder: Operational Ratios
+			lineageTag: 8d3e0a11-5b11-4e3a-91e8-a1b100000030
+
+		partition DAX = m
+			mode: import
+			source =
+					let
+					    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+					    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+					    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+					in
+					    #"Removed Columns"
+
+		changedProperty = Name
+
+		annotation PBI_ResultType = Table
+

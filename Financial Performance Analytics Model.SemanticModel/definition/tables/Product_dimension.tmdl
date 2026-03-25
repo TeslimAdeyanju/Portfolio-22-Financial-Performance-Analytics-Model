@@ -1,0 +1,37 @@
+table Product_dimension
+	lineageTag: 7c7faf20-f39b-49b8-9ee6-08755058629c
+
+	column Product
+		dataType: string
+		lineageTag: c8a38b25-284a-46fc-b850-77610327a38a
+		summarizeBy: none
+		sourceColumn: Product
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Product key'
+		dataType: int64
+		formatString: 0
+		lineageTag: e815ddcd-b80b-4e65-b5c4-9491c072480c
+		summarizeBy: none
+		sourceColumn: Product key
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Product_dimension = m
+		mode: import
+		queryGroup: 'Dimension Table'
+		source =
+				let
+				    Source = financials,
+				    #"Removed Other Columns" = Table.SelectColumns(Source,{"Product"}),
+				    #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns"),
+				    #"Added Index" = Table.AddIndexColumn(#"Removed Duplicates", "Index", 1, 1, Int64.Type),
+				    #"Renamed Columns" = Table.RenameColumns(#"Added Index",{{"Index", "Product key"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

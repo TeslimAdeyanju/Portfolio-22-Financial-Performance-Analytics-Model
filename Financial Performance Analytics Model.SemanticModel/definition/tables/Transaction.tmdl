@@ -1,0 +1,197 @@
+table Transaction
+	lineageTag: 8e27091c-3ab1-4d05-a881-b7f1bc80b972
+
+	column 'Units Sold'
+		dataType: double
+		formatString: 0
+		displayFolder: Sales Information
+		lineageTag: 32ef1db2-22b7-43d5-a849-687dcd82717f
+		summarizeBy: sum
+		sourceColumn: Units Sold
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Manufacturing Price'
+		dataType: int64
+		formatString: 0
+		displayFolder: Cost Information
+		lineageTag: da68784d-be1e-4d08-a8b6-36402dc0d14d
+		summarizeBy: sum
+		sourceColumn: Manufacturing Price
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sale Price'
+		dataType: int64
+		formatString: 0
+		displayFolder: Sales Information
+		lineageTag: 48668ce7-9595-4957-a5e7-dd3ce1ce78c7
+		summarizeBy: sum
+		sourceColumn: Sale Price
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Gross Sales'
+		dataType: double
+		displayFolder: Sales Information
+		lineageTag: f659863c-7ae5-4bdc-9cfd-de0d48e5ac2d
+		summarizeBy: sum
+		sourceColumn: Gross Sales
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Discounts
+		dataType: double
+		displayFolder: Cost Information
+		lineageTag: 7212ac64-716f-4a0f-8b65-5c2af0ffca64
+		summarizeBy: sum
+		sourceColumn: Discounts
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column COGS
+		dataType: double
+		displayFolder: Cost Information
+		lineageTag: f77befe6-ca04-4661-8f00-b643c252768d
+		summarizeBy: sum
+		sourceColumn: COGS
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Profit
+		dataType: double
+		displayFolder: Sales Information
+		lineageTag: faf77348-3284-4a63-8e81-8ec80136ed1f
+		summarizeBy: sum
+		sourceColumn: Profit
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		displayFolder: Foreign Key
+		lineageTag: ae74a762-5acf-4fd2-a916-a929a9c2abfc
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Segment key'
+		dataType: int64
+		formatString: 0
+		displayFolder: Foreign Key
+		lineageTag: 15769b4f-6ab3-43b6-8dd6-dbd93edafbe5
+		summarizeBy: none
+		sourceColumn: Segment key
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Country Key'
+		dataType: int64
+		formatString: 0
+		displayFolder: Foreign Key
+		lineageTag: 867162ec-77d5-473e-a16e-3ec7090c46d8
+		summarizeBy: none
+		sourceColumn: Country Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Product key'
+		dataType: int64
+		formatString: 0
+		displayFolder: Foreign Key
+		lineageTag: 8be9072d-7a18-420b-b57d-b666a650a4fb
+		summarizeBy: none
+		sourceColumn: Product key
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Discount Brand Key'
+		dataType: int64
+		formatString: 0
+		displayFolder: Foreign Key
+		lineageTag: a53bdf5c-60c4-4d1d-b234-4fe08b1c2e6a
+		summarizeBy: none
+		sourceColumn: Discount Brand Key
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Discount Band'
+		dataType: string
+		lineageTag: 9d6199ce-dfe8-4e4c-835c-885810712795
+		summarizeBy: none
+		sourceColumn: Discount Band
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sales
+		dataType: double
+		lineageTag: a5d4e274-5613-4200-81e4-671affb7ab2b
+		summarizeBy: sum
+		sourceColumn: " Sales"
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Month Number'
+		dataType: int64
+		formatString: 0
+		lineageTag: fc1528e4-2890-4554-ba14-b4a0e668ef81
+		summarizeBy: sum
+		sourceColumn: Month Number
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name'
+		dataType: string
+		lineageTag: 29c72904-4ec2-451d-8244-24e409d7beb8
+		summarizeBy: none
+		sourceColumn: Month Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: ceb2fdb2-9425-4e49-93e6-6322423ea112
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Transaction = m
+		mode: import
+		queryGroup: 'Fact Table'
+		source =
+				let
+				    Source = financials,
+				    #"Merged Queries" = Table.NestedJoin(Source, {"Segment"}, Segement_dimension, {"Segment"}, "Segement_dimension", JoinKind.LeftOuter),
+				    #"Expanded Segement_dimension" = Table.ExpandTableColumn(#"Merged Queries", "Segement_dimension", {"Segment key"}, {"Segment key"}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Expanded Segement_dimension",{"Segment"}),
+				    #"Merged Queries1" = Table.NestedJoin(#"Removed Columns", {"Country"}, Country_dimension, {"Country"}, "Country_dimension", JoinKind.LeftOuter),
+				    #"Expanded Country_dimension" = Table.ExpandTableColumn(#"Merged Queries1", "Country_dimension", {"Country Key"}, {"Country Key"}),
+				    #"Removed Columns1" = Table.RemoveColumns(#"Expanded Country_dimension",{"Country"}),
+				    #"Merged Queries2" = Table.NestedJoin(#"Removed Columns1", {"Product"}, Product_dimension, {"Product"}, "Product_dimension", JoinKind.LeftOuter),
+				    #"Expanded Product_dimension" = Table.ExpandTableColumn(#"Merged Queries2", "Product_dimension", {"Product key"}, {"Product key"}),
+				    #"Removed Columns2" = Table.RemoveColumns(#"Expanded Product_dimension",{"Product"}),
+				    #"Merged Queries3" = Table.NestedJoin(#"Removed Columns2", {"Discount Band"}, Discount_dimension, {"Discount Band"}, "Brand Discount_dimension", JoinKind.LeftOuter),
+				    #"Expanded Brand Discount_dimension" = Table.ExpandTableColumn(#"Merged Queries3", "Brand Discount_dimension", {"Discount Brand Key"}, {"Discount Brand Key"})
+				in
+				    #"Expanded Brand Discount_dimension"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

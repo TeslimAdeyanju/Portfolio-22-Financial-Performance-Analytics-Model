@@ -1,0 +1,13 @@
+expression financials =
+		let
+		 Source = Excel.Workbook(File.Contents("Y:\MicrosoftPowerBI\PortfolioCollection\Portfolio-5-FinancialDataAnalysis\Financial Sample.xlsx"), null, true),
+		    financials_Table = Source{[Item="financials",Kind="Table"]}[Data],
+		    #"Changed Type" = Table.TransformColumnTypes(financials_Table,{{"Segment", type text}, {"Country", type text}, {"Product", type text}, {"Discount Band", type text}, {"Units Sold", type number}, {"Manufacturing Price", Int64.Type}, {"Sale Price", Int64.Type}, {"Gross Sales", type number}, {"Discounts", type number}, {" Sales", type number}, {"COGS", type number}, {"Profit", type number}, {"Date", type date}, {"Month Number", Int64.Type}, {"Month Name", type text}, {"Year", Int64.Type}})
+		in
+		    #"Changed Type"
+	lineageTag: 5d739fa8-f127-42bb-93b7-dc3f142e3996
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

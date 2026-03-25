@@ -1,0 +1,20 @@
+relationship AutoDetected_8644ac90-9d42-4aa2-9b16-e2670ac385fd
+	fromColumn: Transaction.'Segment key'
+	toColumn: Segement_dimension.'Segment key'
+
+relationship AutoDetected_2d95a40e-9727-47c6-9e47-1139bb66da9c
+	fromColumn: Transaction.'Country Key'
+	toColumn: Country_dimension.'Country Key'
+
+relationship AutoDetected_744fda34-b87e-4434-a035-d4bc7ede80f4
+	fromColumn: Transaction.'Product key'
+	toColumn: Product_dimension.'Product key'
+
+relationship AutoDetected_1f173e79-0c2f-494c-8ccf-b346aba6bef1
+	fromColumn: Transaction.'Discount Brand Key'
+	toColumn: Discount_dimension.'Discount Brand Key'
+
+relationship eaee575d-659a-a151-fd78-67bcd164e5b9
+	fromColumn: Transaction.Date
+	toColumn: Date_dimension.Date
+

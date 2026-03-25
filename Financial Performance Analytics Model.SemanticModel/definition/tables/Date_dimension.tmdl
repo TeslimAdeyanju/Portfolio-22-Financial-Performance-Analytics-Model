@@ -1,0 +1,51 @@
+table Date_dimension
+	lineageTag: 410900ee-e90f-4516-ac92-1c0cdcb6f652
+
+	column Date
+		formatString: General Date
+		lineageTag: 0c94eb0d-cca0-48b6-ae39-0ce49b484ed8
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year = year(Date_dimension[Date])
+		formatString: 0
+		lineageTag: f2febf6d-da1e-47ab-a1e2-2c87c53e80c3
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Number' = MONTH(Date_dimension[Date])
+		formatString: 0
+		lineageTag: 6cad5bcb-63fd-4bad-9143-a96d2edc7d88
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name' = FORMAT(Date_dimension[Date], "MMMM")
+		lineageTag: 4e09affa-0b31-4da4-a7f8-7ea654549480
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day of week' = WEEKDAY(Date_dimension[Date])
+		formatString: 0
+		lineageTag: 8b2c2ee0-0ffe-4f90-a210-0217eb234ed7
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day Name' = FORMAT(Date_dimension[Date], "DDDD")
+		lineageTag: b9c056ea-ef31-4b6a-a97b-1aacf6380b7b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Date_dimension = calculated
+		mode: import
+		source = CALENDARAUTO()
+
+	annotation PBI_Id = 86cc5793ab6b41759278f2c3f6e49494
+

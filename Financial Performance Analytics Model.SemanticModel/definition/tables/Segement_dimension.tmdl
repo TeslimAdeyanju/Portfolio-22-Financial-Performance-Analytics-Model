@@ -1,0 +1,37 @@
+table Segement_dimension
+	lineageTag: ba302e55-6b68-45c7-ab99-a6be98fc089f
+
+	column Segment
+		dataType: string
+		lineageTag: bff8348e-b8ee-4331-9505-364d47f2c32f
+		summarizeBy: none
+		sourceColumn: Segment
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Segment key'
+		dataType: int64
+		formatString: 0
+		lineageTag: 69f18041-7a91-46e2-9009-1f7d2c3a78fb
+		summarizeBy: none
+		sourceColumn: Segment key
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Segement_dimension = m
+		mode: import
+		queryGroup: 'Dimension Table'
+		source =
+				let
+				    Source = financials,
+				    #"Removed Other Columns" = Table.SelectColumns(Source,{"Segment"}),
+				    #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns"),
+				    #"Added Index" = Table.AddIndexColumn(#"Removed Duplicates", "Index", 1, 1, Int64.Type),
+				    #"Renamed Columns" = Table.RenameColumns(#"Added Index",{{"Index", "Segment key"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

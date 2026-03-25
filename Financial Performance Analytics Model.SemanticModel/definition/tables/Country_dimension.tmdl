@@ -1,0 +1,37 @@
+table Country_dimension
+	lineageTag: 2d9ad243-9491-40a5-8a70-6bb717de1cf3
+
+	column Country
+		dataType: string
+		lineageTag: b46706af-8d6c-4149-a75d-04a4082dd59d
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Country Key'
+		dataType: int64
+		formatString: 0
+		lineageTag: 7460fbe0-172a-4383-b161-81cff9ed6a3a
+		summarizeBy: none
+		sourceColumn: Country Key
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Country_dimension = m
+		mode: import
+		queryGroup: 'Dimension Table'
+		source =
+				let
+				    Source = financials,
+				    #"Removed Other Columns" = Table.SelectColumns(Source,{"Country"}),
+				    #"Removed Duplicates" = Table.Distinct(#"Removed Other Columns"),
+				    #"Added Index" = Table.AddIndexColumn(#"Removed Duplicates", "Index", 1, 1, Int64.Type),
+				    #"Renamed Columns" = Table.RenameColumns(#"Added Index",{{"Index", "Country Key"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

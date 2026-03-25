@@ -1,0 +1,33 @@
+/// Financial Data Modelling - Comprehensive financial analysis model with transaction data, product _dimensions, and country segments
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-GB
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup 'Dimension Table'
+
+	annotation PBI_QueryGroupOrder = 1
+
+queryGroup 'Fact Table'
+
+	annotation PBI_QueryGroupOrder = 2
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["financials","Transaction","Segement_dimension","Country_dimension","Product_dimension","Discount_dimension","DAX"]
+
+annotation PBI_ProTooling = ["MCP-PBIModeling","TMDLView_Desktop","DevMode"]
+
+ref table Transaction
+ref table Segement_dimension
+ref table Country_dimension
+ref table Product_dimension
+ref table Discount_dimension
+ref table Date_dimension
+ref table DAX
+
+ref cultureInfo en-US
+
