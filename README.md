@@ -120,27 +120,7 @@ The source contains raw transactional data with the following columns:
 
 ### Star Schema
 
-```
-                    ┌─────────────────────┐
-                    │   Segement_dimension │
-                    │  (Segment key PK)    │
-                    └──────────┬──────────┘
-                               │
-┌────────────────┐             │         ┌──────────────────────┐
-│ Country_dim    │             │         │   Product_dimension   │
-│ (Country Key)  ├─────────────┤         │   (Product key PK)   │
-└────────────────┘             │         └──────────┬───────────┘
-                               │                    │
-                    ┌──────────▼──────────────────── ▼──────────┐
-                    │               Transaction                   │
-                    │           (Central Fact Table)              │
-                    └──────────┬─────────────────────┬───────────┘
-                               │                     │
-                    ┌──────────▼──────────┐  ┌───────▼──────────┐
-                    │   Date_dimension    │  │ Discount_dimension │
-                    │   (CALENDARAUTO)    │  │ (Discount Brand Key│
-                    └─────────────────────┘  └───────────────────┘
-```
+![Star schema model](image/star%20schema.png)
 
 ### Tables
 
